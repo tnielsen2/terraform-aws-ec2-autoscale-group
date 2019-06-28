@@ -13,17 +13,17 @@ resource "aws_launch_template" "default" {
   count = "${var.enabled == "true" ? 1 : 0}"
 
   name_prefix                          = "${format("%s%s", module.label.id, var.delimiter)}"
-  block_device_mappings                = "${var.block_device_mappings}"
-  credit_specification                 = "${var.credit_specification}"
+  #block_device_mappings                = "${var.block_device_mappings}"
+  #credit_specification                 = "${var.credit_specification}"
   disable_api_termination              = "${var.disable_api_termination}"
   ebs_optimized                        = "${var.ebs_optimized}"
-  elastic_gpu_specifications           = "${var.elastic_gpu_specifications}"
+  #elastic_gpu_specifications           = "${var.elastic_gpu_specifications}"
   image_id                             = "${var.image_id}"
   instance_initiated_shutdown_behavior = "${var.instance_initiated_shutdown_behavior}"
-  instance_market_options              = "${var.instance_market_options }"
+  #instance_market_options              = "${var.instance_market_options }"
   instance_type                        = "${var.instance_type}"
   key_name                             = "${var.key_name}"
-  placement                            = "${var.placement}"
+  #placement                            = "${var.placement}"
   user_data                            = "${var.user_data_base64}"
 
   iam_instance_profile {
@@ -96,7 +96,7 @@ resource "aws_autoscaling_group" "default" {
 
   launch_template  {
     id      = "${join("", aws_launch_template.default.*.id)}"
-    version = "${aws_launch_template.default.latest_version}"
+    version = "${aws_launch_template.default[count.index].latest_version}"
   }
 
   tags = "${data.null_data_source.tags_as_list_of_maps.*.outputs}"

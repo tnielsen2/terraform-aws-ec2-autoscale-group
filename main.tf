@@ -13,17 +13,17 @@ resource "aws_launch_template" "default" {
   count = "${var.enabled == "true" ? 1 : 0}"
 
   name_prefix                          = "${format("%s%s", module.label.id, var.delimiter)}"
-  block_device_mappings                = ["${var.block_device_mappings}"]
-  credit_specification                 = ["${var.credit_specification}"]
+  block_device_mappings                = "${var.block_device_mappings}"
+  credit_specification                 = "${var.credit_specification}"
   disable_api_termination              = "${var.disable_api_termination}"
   ebs_optimized                        = "${var.ebs_optimized}"
-  elastic_gpu_specifications           = ["${var.elastic_gpu_specifications}"]
+  elastic_gpu_specifications           = "${var.elastic_gpu_specifications}"
   image_id                             = "${var.image_id}"
   instance_initiated_shutdown_behavior = "${var.instance_initiated_shutdown_behavior}"
-  instance_market_options              = ["${var.instance_market_options }"]
+  instance_market_options              = "${var.instance_market_options }"
   instance_type                        = "${var.instance_type}"
   key_name                             = "${var.key_name}"
-  placement                            = ["${var.placement}"]
+  placement                            = "${var.placement}"
   user_data                            = "${var.user_data_base64}"
 
   iam_instance_profile {
@@ -40,7 +40,7 @@ resource "aws_launch_template" "default" {
     device_index                = 0
     associate_public_ip_address = "${var.associate_public_ip_address}"
     delete_on_termination       = true
-    security_groups             = ["${var.security_group_ids}"]
+    security_groups             = "${var.security_group_ids}"
   }
 
   tag_specifications {
@@ -74,32 +74,32 @@ resource "aws_autoscaling_group" "default" {
   count = "${var.enabled == "true" ? 1 : 0}"
 
   name_prefix               = "${format("%s%s", module.label.id, var.delimiter)}"
-  vpc_zone_identifier       = ["${var.subnet_ids}"]
+  vpc_zone_identifier       = "${var.subnet_ids}"
   max_size                  = "${var.max_size}"
   min_size                  = "${var.min_size}"
-  load_balancers            = ["${var.load_balancers}"]
+  load_balancers            = "${var.load_balancers}"
   health_check_grace_period = "${var.health_check_grace_period}"
   health_check_type         = "${var.health_check_type}"
   min_elb_capacity          = "${var.min_elb_capacity}"
   wait_for_elb_capacity     = "${var.wait_for_elb_capacity}"
-  target_group_arns         = ["${var.target_group_arns}"]
+  target_group_arns         = "${var.target_group_arns}"
   default_cooldown          = "${var.default_cooldown}"
   force_delete              = "${var.force_delete}"
   termination_policies      = "${var.termination_policies}"
   suspended_processes       = "${var.suspended_processes}"
   placement_group           = "${var.placement_group}"
-  enabled_metrics           = ["${var.enabled_metrics}"]
+  enabled_metrics           = "${var.enabled_metrics}"
   metrics_granularity       = "${var.metrics_granularity}"
   wait_for_capacity_timeout = "${var.wait_for_capacity_timeout}"
   protect_from_scale_in     = "${var.protect_from_scale_in}"
   service_linked_role_arn   = "${var.service_linked_role_arn}"
 
-  launch_template = {
+  launch_template  {
     id      = "${join("", aws_launch_template.default.*.id)}"
     version = "${aws_launch_template.default.latest_version}"
   }
 
-  tags = ["${data.null_data_source.tags_as_list_of_maps.*.outputs}"]
+  tags = "${data.null_data_source.tags_as_list_of_maps.*.outputs}"
 
   lifecycle {
     create_before_destroy = true
